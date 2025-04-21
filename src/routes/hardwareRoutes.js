@@ -8,7 +8,7 @@ router.post("/update/:deviceId", async (req, res) => {
         const { deviceId } = req.params;
         const { temperature, battery } = req.body;
         const device = await getAndUpdateDevice({ deviceId, temperature, battery });
-        if (!device) res.send("Device not found!");
+        if (!device) return res.send("Device not found!");
         res.send({
             value: device.value,
             on: device.on,
