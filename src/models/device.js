@@ -13,8 +13,6 @@ const DeviceSchema = new mongoose.Schema({
     economy_start: { type: Number, default: 0 },
     economy_end: { type: Number, default: 0 },
     openedDoor: { type: Boolean, default: false },
-    min: { type: Boolean, default: false },
-    max: { type: Boolean, default: false },
     lastData: {type: Date, default: Date.now},
 });
 
