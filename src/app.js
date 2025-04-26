@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 const { PORT, MONGO } = process.env;
 
-const { userRoutes, accountRoutes, deviceRoutes, hardwareRoutes } = require('./routes');
+const { userRoutes, accountRoutes, deviceRoutes, hardwareRoutes, reportRoutes } = require('./routes');
 const { apiMiddleWare, userMiddleWare, hardwareMiddleWare } = require('./middlewares/api_middleware');
 const { authRoutes } = require('./utils/constants');
 
@@ -39,6 +39,7 @@ app.use('/api/accounts', accountRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/devices', deviceRoutes);
 app.use('/api/hardware', hardwareMiddleWare, hardwareRoutes);
+app.use('/api/reports', reportRoutes);
 app.use((req, res) => res.sendResponse('api not found', 404));
 
 app.listen(PORT, async () => {
