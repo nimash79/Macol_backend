@@ -1,5 +1,6 @@
 const express = require("express");
 const { getAndUpdateDevice } = require("../controllers/deviceController");
+const { addReport } = require("../controllers/reportController");
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ router.post("/update/:deviceId", async (req, res) => {
         const { temperature, battery } = req.body;
         const device = await getAndUpdateDevice({ deviceId, temperature, battery });
         if (!device) return res.send("Device not found!");
+        await addReport({ deviceId, temperature, battery });
         res.send({
             value: device.value,
             on: device.on,
