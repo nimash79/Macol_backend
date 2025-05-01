@@ -7,6 +7,7 @@ const {
     changeDeviceSettings,
     getSelectedDevices,
     createDevice,
+    changeDeviceOnStatus,
 } = require("../controllers/deviceController");
 
 const router = express.Router();
@@ -73,6 +74,16 @@ router.post("/change-settings", async (req, res) => {
             economy_start,
             economy_end,
         });
+        res.sendResponse({ status: 1 });
+    } catch (err) {
+        res.sendError(err);
+    }
+});
+
+router.post("/change-on", async (req, res) => {
+    try {
+        const { deviceId, on } = req.body;
+        await changeDeviceOnStatus({ deviceId, on });
         res.sendResponse({ status: 1 });
     } catch (err) {
         res.sendError(err);

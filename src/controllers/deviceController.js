@@ -32,6 +32,11 @@ exports.changeDeviceName = async ({ userId, deviceId, name }) => {
     return 1;
 }
 
+exports.changeDeviceOnStatus = async ({ deviceId, on }) => {
+    await Device.updateOne({ deviceId }, { on });
+    return 1;
+}
+
 exports.changeDeviceValue = async ({ deviceIds, value, economy }) => {
     await Device.updateMany(
         { deviceId: { $in: deviceIds } },
