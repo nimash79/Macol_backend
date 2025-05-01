@@ -13,6 +13,7 @@ router.post("/update/:deviceId", async (req, res) => {
         await addReport({ deviceId, temperature, battery });
         res.send({
             value: device.value,
+            calibration: device.calibration,
             on: device.on,
         });
     } catch (err) {

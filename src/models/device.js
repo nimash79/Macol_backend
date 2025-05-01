@@ -6,6 +6,7 @@ const DeviceSchema = new mongoose.Schema({
     name: { type: String, required: true, minLength: 4, maxLength: 200 },
     value: { type: Number, required: true },
     temperature: { type: Number, required: true },
+    calibration: { type: Number, default: 0 },
     battery: { type: Number, required: true },
     on: { type: Boolean, default: false },
     economy: { type: Boolean, default: false },
