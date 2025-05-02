@@ -6,8 +6,9 @@ const {
     changeDeviceValue,
     changeDeviceSettings,
     getSelectedDevices,
-    createDevice,
     changeDeviceOnStatus,
+    deleteDevice,
+    addDevice,
 } = require("../controllers/deviceController");
 
 const router = express.Router();
@@ -90,9 +91,19 @@ router.post("/change-on", async (req, res) => {
     }
 });
 
-router.post("/create", async (req, res) => {
+router.post("/add", async (req, res) => {
     try {
-        await createDevice({ userId: req.user.id });
+        const devices = await addDevice({ userId: req.user.id, mobile: req.user.mobile, count: req.body.count });
+        res.sendResponse({ status: 1, devices });
+    } catch (err) {
+        res.sendError(err);
+    }
+});
+
+router.post("/delete/:deviceId", async (req, res) => {
+    try {
+        const { deviceId } = req.params;
+        await deleteDevice({ deviceId });
         res.sendResponse({ status: 1 });
     } catch (err) {
         res.sendError(err);

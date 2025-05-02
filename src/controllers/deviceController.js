@@ -1,9 +1,39 @@
 const { Device } = require('../models');
+const { randomCode } = require('../utils/helper');
 
-exports.createDevice = async ({ userId }) => {
-    await Device.create({
-        userId,
-    });
+exports.addDevice = async ({ userId, mobile, count }) => {
+    const currentDevices = await Device.find({ userId }).select("deviceId name");
+    const mobileWithout0 = mobile.substring(1);
+    let number = 1;
+    const promises = [];
+    for (let i = 0; i < count; i++) {
+        // generate device id
+        let randomNumber = randomCode().toString();
+        let deviceId = mobileWithout0 + randomNumber;
+        while (currentDevices.map(d => d.deviceId).includes(deviceId)) {
+            randomNumber = randomCode().toString();
+            deviceId = mobileWithout0 + randomNumber;
+        }
+        // generate name
+        const prefix = "دستگاه ";
+        let name = prefix + number;
+        while (currentDevices.map(d => d.name).includes(name)) {
+            number++;
+            name = prefix + number;
+        }
+        number++;
+        const promise = Device.create({
+            userId,
+            deviceId,
+            name,
+            temperature: 15,
+            value: 15,
+            battery: 100
+        });
+        promises.push(promise);
+    }
+    const devices = await Promise.all(promises);
+    return devices;
 }
 
 exports.existsDevice = async ({ deviceId }) => {
@@ -26,7 +56,7 @@ exports.getSelectedDevices = async ({ deviceIds }) => {
 }
 
 exports.changeDeviceName = async ({ userId, deviceId, name }) => {
-    const exists = await Device.exists({userId, name});
+    const exists = await Device.exists({ userId, name });
     if (exists) return 2;
     await Device.updateOne({ deviceId }, { name });
     return 1;
@@ -62,4 +92,8 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
     if (device.economy && (new Date(now).getHours() >= device.economy_start || new Date(now).getHours() < device.economy_end))
         device.value = device.economy_value;
     return device;
+}
+
+exports.deleteDevice = async ({ deviceId }) => {
+    await Device.deleteOne({ deviceId });
 }

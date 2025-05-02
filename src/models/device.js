@@ -15,6 +15,7 @@ const DeviceSchema = new mongoose.Schema({
     economy_end: { type: Number, default: 0 },
     openedDoor: { type: Boolean, default: false },
     lastData: {type: Date, default: Date.now},
+    createDate: {type: Date, default: Date.now},
 });
 
 module.exports = mongoose.model('Device', DeviceSchema);
