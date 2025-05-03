@@ -42,6 +42,7 @@ exports.login = async body => {
         id: user.id,
         fullname: user.fullname,
         mobile: user.mobile,
+        registerDate: user.registerDate,
         lastLoginDate: user.lastLoginDate,
     }, JWTKEY, { expiresIn: '24h' });
     user.lastLoginDate = Date.now();
