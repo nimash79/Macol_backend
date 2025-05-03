@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
     registerDate: {type: Date, default: Date.now},
     lastLoginDate: {type: Date, default: Date.now},
     activeCode: {type: Number, required: true, default: 0},
+    isActive: {type: Boolean, required: true, default: false},
 });
 
 module.exports = mongoose.model('User', UserSchema);

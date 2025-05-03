@@ -7,6 +7,8 @@ const {
   login,
   existsMobile,
   register,
+  active,
+  sendActiveCode,
 } = require("../controllers/accountController");
 const { randomCode } = require("../utils/helper");
 
@@ -35,6 +37,7 @@ router.get("/active-code", async (req, res) => {
 router.post("/active", async (req, res) => {
   try {
     const { userId, code } = req.body;
+    console.log({ userId, code });
     const data = await active({ userId, code });
     if (data.status === 2) return res.sendError("invalid code", 400);
     res.sendResponse(data);
@@ -42,6 +45,16 @@ router.post("/active", async (req, res) => {
     res.sendError(err);
   }
 });
+
+router.get("/send-active-code/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const data = await sendActiveCode({ userId });
+    res.sendResponse(data);
+  } catch (err) {
+    res.sendError(err);
+  }
+})
 
 router.post("/login", async (req, res) => {
   try {
