@@ -75,10 +75,11 @@ exports.changeDeviceValue = async ({ deviceIds, value, economy }) => {
 };
 
 exports.changeDeviceSettings = async ({ deviceIds, economy_value, economy_start, economy_end }) => {
-    await Device.updateMany(
+    const devices = await Device.updateMany(
         { deviceId: { $in: deviceIds } },
         { $set: { economy_value, economy_start, economy_end } }
     );
+    return devices;
 };
 
 exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {

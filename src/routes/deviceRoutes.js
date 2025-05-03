@@ -69,13 +69,13 @@ router.post("/change", async (req, res) => {
 router.post("/change-settings", async (req, res) => {
     try {
         const { deviceIds, economy_value, economy_start, economy_end } = req.body;
-        await changeDeviceSettings({
+        const devices = await changeDeviceSettings({
             deviceIds,
             economy_value,
             economy_start,
             economy_end,
         });
-        res.sendResponse({ status: 1 });
+        res.sendResponse({ status: 1, devices });
     } catch (err) {
         res.sendError(err);
     }
