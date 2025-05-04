@@ -108,3 +108,12 @@ exports.changeCalibration = async ({ deviceIds, calibration }) => {
     const devices = await Device.find({ deviceId: { $in: deviceIds } });
     return devices;
 }
+
+exports.changeDeviceOffDates = async ({ deviceIds, off_start, off_end }) => {
+    await Device.updateMany(
+        { deviceId: { $in: deviceIds } },
+        { $set: { off_start, off_end } }
+    );
+    const devices = await Device.find({ deviceId: { $in: deviceIds } });
+    return devices;
+}
