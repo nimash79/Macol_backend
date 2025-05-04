@@ -9,6 +9,7 @@ const {
     changeDeviceOnStatus,
     deleteDevice,
     addDevice,
+    changeCalibration,
 } = require("../controllers/deviceController");
 
 const router = express.Router();
@@ -109,5 +110,15 @@ router.post("/delete/:deviceId", async (req, res) => {
         res.sendError(err);
     }
 });
+
+router.post("/change-calibration", async (req, res) => {
+    try {
+        const { deviceIds, calibration } = req.body;
+        const devices = await changeCalibration({ deviceIds, calibration });
+        res.sendResponse({ status: 1, devices });
+    } catch (err) {
+        res.sendError(err);
+    }
+})
 
 module.exports = router;

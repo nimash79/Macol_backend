@@ -75,10 +75,11 @@ exports.changeDeviceValue = async ({ deviceIds, value, economy }) => {
 };
 
 exports.changeDeviceSettings = async ({ deviceIds, economy_value, economy_start, economy_end }) => {
-    const devices = await Device.updateMany(
+    await Device.updateMany(
         { deviceId: { $in: deviceIds } },
         { $set: { economy_value, economy_start, economy_end } }
     );
+    const devices = await Device.find({ deviceId: { $in: deviceIds } });
     return devices;
 };
 
@@ -97,4 +98,13 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
 
 exports.deleteDevice = async ({ deviceId }) => {
     await Device.deleteOne({ deviceId });
+}
+
+exports.changeCalibration = async ({ deviceIds, calibration }) => {
+    await Device.updateMany(
+        { deviceId: { $in: deviceIds } },
+        { $set: { calibration } }
+    );
+    const devices = await Device.find({ deviceId: { $in: deviceIds } });
+    return devices;
 }
