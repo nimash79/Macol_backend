@@ -96,8 +96,8 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
     return device;
 }
 
-exports.deleteDevice = async ({ deviceId }) => {
-    await Device.deleteOne({ deviceId });
+exports.deleteDevices = async ({ deviceIds }) => {
+    await Device.deleteMany({ deviceId: { $in: deviceIds } });
 }
 
 exports.changeCalibration = async ({ deviceIds, calibration }) => {

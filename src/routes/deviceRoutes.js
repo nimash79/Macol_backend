@@ -7,7 +7,7 @@ const {
     changeDeviceSettings,
     getSelectedDevices,
     changeDeviceOnStatus,
-    deleteDevice,
+    deleteDevices,
     addDevice,
     changeCalibration,
     changeDeviceOffDates,
@@ -102,10 +102,10 @@ router.post("/add", async (req, res) => {
     }
 });
 
-router.post("/delete/:deviceId", async (req, res) => {
+router.post("/delete", async (req, res) => {
     try {
-        const { deviceId } = req.params;
-        await deleteDevice({ deviceId });
+        const { deviceIds } = req.body;
+        await deleteDevices({ deviceIds });
         res.sendResponse({ status: 1 });
     } catch (err) {
         res.sendError(err);
