@@ -51,7 +51,41 @@ exports.getDevice = async ({ deviceId }) => {
 }
 
 exports.getSelectedDevices = async ({ deviceIds }) => {
-    const devices = await Device.find({ deviceId: { $in: deviceIds } });
+    if (!Array.isArray(deviceIds))
+        deviceIds = [deviceIds];
+    const devices = await Device.aggregate([
+        {
+            $match: {
+                deviceId: { $in: deviceIds }
+            }
+        },
+        {
+            $lookup: {
+                from: "reports",
+                let: { device_id: "$deviceId" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: { $eq: ["$deviceId", "$$device_id"] }
+                        }
+                    },
+                    {
+                        $sort: { reportDate: -1 }
+                    },
+                    {
+                        $skip: 1
+                    },
+                    {
+                        $limit: 1
+                    }
+                ],
+                as: "secondReport"
+            }
+        },
+        {
+            $unwind: "$secondReport"
+        }
+    ]);
     return devices;
 }
 
