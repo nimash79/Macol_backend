@@ -5,12 +5,12 @@ const moment = require('moment-jalaali');
 moment.loadPersian({ dialect: 'persian-modern' });
 
 exports.addReport = async ({ deviceId, temperature, battery }) => {
-    await Report.create({
-        deviceId,
-        temperature,
-        battery,
-    });
-    return true;
+  await Report.create({
+    deviceId,
+    temperature,
+    battery,
+  });
+  return true;
 }
 
 exports.getReports = async ({ deviceId, type }) => {
@@ -85,7 +85,7 @@ exports.getReports = async ({ deviceId, type }) => {
   const averages = Array(outputLength).fill(0);
 
   // Correct index extraction
-  results.forEach(({ _id, avgTemp }) => {    
+  results.forEach(({ _id, avgTemp }) => {
     let index = Object.values(_id)[0] - (type === 'daily' ? 0 : 1); // adjust to 0-based index
     if (type === 'weekly') {
       index = _id.day % 7; // Saturday (7) → 0, Sunday (1) → 1, ..., Friday (6) → 6
@@ -159,18 +159,37 @@ exports.exportReport = async ({ deviceIds, type }) => {
   const pipeline = [
     {
       $match: {
-        deviceId: { $in: deviceIds }, // Match any of the device IDs
+        deviceId: { $in: deviceIds },
         reportDate: { $gte: startDate }
       }
     },
     {
       $group: {
-        _id: { deviceId: '$deviceId', groupFormat }, // Group by deviceId and the chosen date group
-        avgTemp: { $avg: '$temperature' }
+        _id: { deviceId: '$deviceId', groupFormat },
+        avgTemp: { $avg: '$temperature' },
       }
     },
     {
-      $sort: { '_id.deviceId': 1, '_id.groupFormat': 1 } // Sort by deviceId and date group
+      $lookup: {
+        from: 'devices',
+        localField: '_id.deviceId',
+        foreignField: 'deviceId',
+        as: 'device'
+      }
+    },
+    {
+      $unwind: '$device'
+    },
+    {
+      $project: {
+        deviceId: '$_id.deviceId',
+        groupFormat: '$_id.groupFormat',
+        avgTemp: 1,
+        deviceName: '$device.name'
+      }
+    },
+    {
+      $sort: { deviceId: 1, groupFormat: 1 }
     }
   ];
 
@@ -182,14 +201,15 @@ exports.exportReport = async ({ deviceIds, type }) => {
 
   // Define columns for the sheet
   worksheet.columns = [
-    { header: 'Device ID', key: 'deviceId', width: 20 },
+    { header: 'Device Name', key: 'deviceName', width: 20 },
     { header: type === 'daily' ? 'Hour' : type === 'weekly' ? 'Day' : 'Month', key: 'label', width: 15 },
     { header: 'Avg Temp (°C)', key: 'avgTemp', width: 20 }
   ];
 
   // Add rows for each time period (hour, day, or month) and device
-  results.forEach(({ _id, avgTemp }) => {
-    const { deviceId, groupFormat } = _id;
+  results.forEach((result) => {
+    const { groupFormat } = result._id;
+    const {deviceName, avgTemp} = result;
     let index = Object.values(groupFormat)[0] - (type === 'daily' ? 0 : 1); // Adjust to 0-based index
     if (type === 'weekly') {
       index = groupFormat.day % 7; // Saturday (7) → 0, Sunday (1) → 1, ..., Friday (6) → 6
@@ -211,7 +231,7 @@ exports.exportReport = async ({ deviceIds, type }) => {
     }
 
     worksheet.addRow({
-      deviceId, // Add deviceId to the row
+      deviceName, // Add deviceId to the row
       label,    // Use Persian month or the appropriate label
       avgTemp: avgTemp.toFixed(0)
     });
