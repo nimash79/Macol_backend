@@ -124,11 +124,10 @@ router.post("/change-calibration", async (req, res) => {
 
 router.post("/change-off-dates", async (req, res) => {
     try {
-        const { deviceIds, off_start, off_end } = req.body;
+        const { deviceIds, off_dates } = req.body;
         const devices = await changeDeviceOffDates({
             deviceIds,
-            off_start,
-            off_end
+            off_dates
         });
         res.sendResponse({ status: 1, devices });
     } catch (err) {

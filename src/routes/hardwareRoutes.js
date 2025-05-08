@@ -17,7 +17,7 @@ router.post("/update/:deviceId", async (req, res) => {
         res.send({
             value: device.value,
             calibration: device.calibration,
-            on: device.on && (now > device.off_end && now < device.off_start),
+            on: device.on,
         });
     } catch (err) {
         console.log(err);

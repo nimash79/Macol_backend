@@ -88,11 +88,18 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
     if (!device) return null;
     device.temperature = temperature;
     device.battery = battery;
-    const now = Date.now();
+    const now = new Date();
     device.lastData = now;
     await device.save();
-    if (device.economy && (new Date(now).getHours() >= device.economy_start || new Date(now).getHours() < device.economy_end))
+    if (device.economy && (now.getHours() >= device.economy_start || now.getHours() < device.economy_end))
         device.value = device.economy_value;
+    // check for off dates
+    let safeOffDates = true;
+    device.off_dates.forEach(date => {
+        date = new Date(date).getDate();
+        if (date == now.getDate()) safeOffDates = false;
+    })
+    device.on = device.on && safeOffDates;
     return device;
 }
 
@@ -109,10 +116,10 @@ exports.changeCalibration = async ({ deviceIds, calibration }) => {
     return devices;
 }
 
-exports.changeDeviceOffDates = async ({ deviceIds, off_start, off_end }) => {
+exports.changeDeviceOffDates = async ({ deviceIds, off_dates }) => {
     await Device.updateMany(
         { deviceId: { $in: deviceIds } },
-        { $set: { off_start, off_end } }
+        { $set: { off_dates } }
     );
     const devices = await Device.find({ deviceId: { $in: deviceIds } });
     return devices;
