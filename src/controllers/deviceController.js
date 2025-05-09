@@ -81,9 +81,6 @@ exports.getSelectedDevices = async ({ deviceIds }) => {
                 ],
                 as: "secondReport"
             }
-        },
-        {
-            $unwind: "$secondReport"
         }
     ]);
     return devices;
