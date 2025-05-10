@@ -5,6 +5,13 @@ exports.randomCode = () => {
   return num;
 };
 
+exports.generateRandomDeviceId = () => {
+  var min = 100000000000000;
+  var max = 900000000000000;
+  var num = Math.floor(Math.random() * min) + max;
+  return num;
+}
+
 exports.randomCardNumber = () => {
   let result = "6077";
   const characters = "0123456789";

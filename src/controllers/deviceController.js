@@ -1,23 +1,20 @@
 const { Device } = require('../models');
-const { randomCode } = require('../utils/helper');
+const { randomCode, generateRandomDeviceId } = require('../utils/helper');
 
 exports.addDevice = async ({ userId, mobile, count }) => {
-    const currentDevices = await Device.find({ userId }).select("deviceId name");
-    const mobileWithout0 = mobile.substring(1);
+    const currentDevices = await Device.find({}).select("deviceId");
+    const currentDevicesOfUser = await Device.find({ userId }).select("name");
     let number = 1;
     const promises = [];
     for (let i = 0; i < count; i++) {
         // generate device id
-        let randomNumber = randomCode().toString();
-        let deviceId = mobileWithout0 + randomNumber;
-        while (currentDevices.map(d => d.deviceId).includes(deviceId)) {
-            randomNumber = randomCode().toString();
-            deviceId = mobileWithout0 + randomNumber;
-        }
+        let deviceId = generateRandomDeviceId().toString();
+        while (currentDevices.map(d => d.deviceId).includes(deviceId))
+            deviceId = generateRandomDeviceId().toString();
         // generate name
         const prefix = "دستگاه ";
         let name = prefix + number;
-        while (currentDevices.map(d => d.name).includes(name)) {
+        while (currentDevicesOfUser.map(d => d.name).includes(name)) {
             number++;
             name = prefix + number;
         }
