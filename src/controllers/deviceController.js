@@ -119,7 +119,7 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
     const now = new Date();
     device.lastData = now;
     await device.save();
-    if (device.economy && (now.getHours() >= device.economy_start || now.getHours() < device.economy_end))
+    if (device.economy && (now.getHours() >= device.economy_start && now.getHours() < device.economy_end))
         device.value = device.economy_value;
     // check for off dates
     let safeOffDates = true;
