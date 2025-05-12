@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const mongoose = require("mongoose");
 
+
 const { PORT, MONGO } = process.env;
 
+const logger = require('./logger');
 const { userRoutes, accountRoutes, deviceRoutes, hardwareRoutes, reportRoutes } = require('./routes');
 const { apiMiddleWare, userMiddleWare, hardwareMiddleWare } = require('./middlewares/api_middleware');
 const { authRoutes } = require('./utils/constants');
@@ -32,6 +34,19 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(bodyParser.json({ extended: false }));
+// Request + Response logger middleware
+app.use((req, res, next) => {
+    const start = Date.now();
+
+    res.on('finish', () => {
+        if (req.method === "OPTIONS") return;
+        const duration = Date.now() - start;
+        const logMessage = `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms - ${req.method === "GET" ? `params: ${JSON.stringify(req.params)}` : `body: ${JSON.stringify(req.body)}`} ${req.user ? `- user: ${req.user.mobile}` : ""}`;
+        logger.info(logMessage);
+    });
+
+    next();
+});
 app.use(apiMiddleWare);
 app.use(authRoutes, userMiddleWare);
 
