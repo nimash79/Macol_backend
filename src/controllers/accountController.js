@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { randomCode } = require('../utils/helper');
 const { encrypt, comparePassword } = require('../utils/security');
+const { sendMessagePattern } = require('../utils/messageService');
 const { JWTKEY } = process.env;
 
 exports.register = async body => {
@@ -11,6 +12,9 @@ exports.register = async body => {
     if (user) return { status: 2 };
     user = await User.create({ fullname, mobile, password: encrypt(password), activeCode: randomCode() });
     user.password = "";
+    // send active code to user mobile
+    const res = await sendMessagePattern({ mobile, activeCode: user.activeCode });
+    console.log(res.data);
     return { status: 1, user };
 }
 
@@ -54,6 +58,7 @@ exports.forgetPassword = async body => {
     const { mobile } = body;
     const user = await User.findOne({ mobile });
     if (!user) return { status: 2 };
+    await sendMessagePattern({ mobile: user.mobile, activeCode: user.activeCode });
     return { status: 1, userId: user._id, code: user.activeCode };
 }
 
