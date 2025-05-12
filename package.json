@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
+    "unserve": "pm2 stop macol_backend && pm2 delete macol_backend",
     "serve": "pm2 start ./src/app.js --name macol_backend"
   },
   "keywords": [],
