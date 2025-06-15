@@ -1,6 +1,7 @@
 const express = require("express");
 const { getAndUpdateDevice } = require("../controllers/deviceController");
 const { addReport } = require("../controllers/reportController");
+const { getRefreshRateType } = require("../utils/helper");
 
 const router = express.Router();
 
@@ -10,14 +11,16 @@ router.post("/update/:deviceId", async (req, res) => {
         const { temperature, battery } = req.body;
         if (temperature < 0 || temperature > 70) return res.send("Invalid temperature");
         if (battery < 0 || battery > 100) return res.send("Invalid battery");
-        const device = await getAndUpdateDevice({ deviceId, temperature, battery });
+        const {device, reset} = await getAndUpdateDevice({ deviceId, temperature, battery });
         if (!device) return res.send("Device not found!");
         await addReport({ deviceId, temperature, battery });
-        const now = new Date();
         res.send({
             value: device.value,
             calibration: device.calibration,
             on: device.on,
+            summer: device.summer,
+            refreshRate: getRefreshRateType(device.refreshRateType),
+            reset,
         });
     } catch (err) {
         console.log(err);

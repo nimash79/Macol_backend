@@ -12,52 +12,27 @@ exports.generateRandomDeviceId = () => {
   return num;
 }
 
-exports.randomCardNumber = () => {
-  let result = "6077";
-  const characters = "0123456789";
-  let counter = 0;
-  while (counter < 12) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-    counter += 1;
-  }
-  return result;
-};
-
-exports.randomAccountNumber = () => {
-  let result = "";
-  const characters = "0123456789";
-  let counter = 0;
-  while (counter < 8) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-    if (result === "0") {
-      result = "";
-      continue;
+exports.getRefreshRateType = (type) => {
+    switch (type) {
+      case 1:
+        return 1;
+      case 2:
+        return 3;
+      case 3:
+        return 5;
+      case 4:
+        return 15;
+      case 5:
+        return 30;
+      case 6:
+        return 60;
+      case 7:
+        return 120;
+      case 8:
+        return 360;
+      case 9:
+        return 720;
+      case 10:
+        return 1440;
     }
-    counter += 1;
-  }
-  return result;
-};
-
-exports.randomCvv2 = () => {
-  var min = 1000;
-  var max = 9000;
-  var num = Math.floor(Math.random() * min) + max;
-  return num;
-};
-
-exports.randomShaba = (accountNumber) => {
-  let result = "IR";
-  const characters = "0123456789";
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < 24) {
-    if (counter === 13) {
-      result += accountNumber;
-      counter += 8;
-      continue;
-    }
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-};
+  };

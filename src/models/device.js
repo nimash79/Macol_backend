@@ -17,6 +17,9 @@ const DeviceSchema = new mongoose.Schema({
     lastData: { type: Date, default: Date.now },
     createDate: { type: Date, default: Date.now },
     off_dates: { type: [Date], default: [] },
+    summer: {type: Boolean, default: false},
+    refreshRateType: {type: Number, default: 5},
+    reset: {type: Boolean, default: false},
 });
 
 module.exports = mongoose.model('Device', DeviceSchema);

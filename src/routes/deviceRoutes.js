@@ -11,6 +11,7 @@ const {
     addDevice,
     changeCalibration,
     changeDeviceOffDates,
+    changeDevicesFeatures,
 } = require("../controllers/deviceController");
 
 const router = express.Router();
@@ -128,6 +129,22 @@ router.post("/change-off-dates", async (req, res) => {
         const devices = await changeDeviceOffDates({
             deviceIds,
             off_dates
+        });
+        res.sendResponse({ status: 1, devices });
+    } catch (err) {
+        res.sendError(err);
+    }
+});
+
+router.post("/change-features", async (req, res) => {
+    try {
+        const { summer, refreshRateType } = req.body;
+        if (req.user == undefined || summer == undefined || refreshRateType == undefined)
+            return res.sendError("Bad Requst", 400);
+        const devices = await changeDevicesFeatures({
+            userId: req.user.id,
+            summer,
+            refreshRateType,
         });
         res.sendResponse({ status: 1, devices });
     } catch (err) {

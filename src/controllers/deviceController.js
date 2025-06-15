@@ -118,6 +118,8 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
     device.battery = battery;
     const now = new Date();
     device.lastData = now;
+    const reset = device.reset;
+    device.reset = false;
     await device.save();
     if (device.economy && (now.getHours() >= device.economy_start && now.getHours() < device.economy_end))
         device.value = device.economy_value;
@@ -128,7 +130,7 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
         if (date == now.getDate()) safeOffDates = false;
     })
     device.on = device.on && safeOffDates;
-    return device;
+    return { device, reset };
 }
 
 exports.deleteDevices = async ({ deviceIds }) => {
@@ -150,5 +152,19 @@ exports.changeDeviceOffDates = async ({ deviceIds, off_dates }) => {
         { $set: { off_dates } }
     );
     const devices = await Device.find({ deviceId: { $in: deviceIds } });
+    return devices;
+}
+
+exports.changeDevicesFeatures = async ({ userId, summer, refreshRateType }) => {
+    await Device.updateMany(
+        { userId },
+        {
+            $set: {
+                summer,
+                refreshRateType
+            }
+        }
+    );
+    const devices = await Device.find({ userId });
     return devices;
 }
