@@ -155,13 +155,14 @@ exports.changeDeviceOffDates = async ({ deviceIds, off_dates }) => {
     return devices;
 }
 
-exports.changeDevicesFeatures = async ({ userId, summer, refreshRateType }) => {
+exports.changeDevicesFeatures = async ({ userId, summer, refreshRateType, wifi }) => {
     await Device.updateMany(
         { userId },
         {
             $set: {
                 summer,
-                refreshRateType
+                refreshRateType,
+                wifi,
             }
         }
     );

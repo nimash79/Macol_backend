@@ -20,6 +20,7 @@ router.post("/update/:deviceId", async (req, res) => {
             on: device.on,
             summer: device.summer,
             refreshRate: getRefreshRateType(device.refreshRateType),
+            wifi: device.wifi,
             reset,
         });
     } catch (err) {

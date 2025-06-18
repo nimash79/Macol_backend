@@ -138,13 +138,14 @@ router.post("/change-off-dates", async (req, res) => {
 
 router.post("/change-features", async (req, res) => {
     try {
-        const { summer, refreshRateType } = req.body;
-        if (req.user == undefined || summer == undefined || refreshRateType == undefined)
+        const { summer, refreshRateType, wifi } = req.body;
+        if (req.user == undefined || summer == undefined || refreshRateType == undefined || wifi == undefined)
             return res.sendError("Bad Requst", 400);
         const devices = await changeDevicesFeatures({
             userId: req.user.id,
             summer,
             refreshRateType,
+            wifi,
         });
         res.sendResponse({ status: 1, devices });
     } catch (err) {
