@@ -12,6 +12,7 @@ const {
     changeCalibration,
     changeDeviceOffDates,
     changeDevicesFeatures,
+    changeDeviceOffTimes,
 } = require("../controllers/deviceController");
 
 const router = express.Router();
@@ -147,6 +148,16 @@ router.post("/change-features", async (req, res) => {
             refreshRateType,
             wifi,
         });
+        res.sendResponse({ status: 1, devices });
+    } catch (err) {
+        res.sendError(err);
+    }
+});
+
+router.post("/change-off-times", async (req, res) => {
+    try {
+        const { deviceIds, off_start, off_end } = req.body;
+        const devices = await changeDeviceOffTimes({deviceIds, off_start, off_end});
         res.sendResponse({ status: 1, devices });
     } catch (err) {
         res.sendError(err);

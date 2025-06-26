@@ -130,6 +130,9 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
         if (date == now.getDate()) safeOffDates = false;
     })
     device.on = device.on && safeOffDates;
+    // check for off times
+    let safeOffTimes = !(now.getHours() >= device.off_start && now.getHours() < device.off_end)
+    device.on = device.on && safeOffTimes;
     return { device, reset };
 }
 
@@ -169,3 +172,12 @@ exports.changeDevicesFeatures = async ({ userId, summer, refreshRateType, wifi }
     const devices = await Device.find({ userId });
     return devices;
 }
+
+exports.changeDeviceOffTimes = async ({ deviceIds, off_start, off_end }) => {
+    await Device.updateMany(
+        { deviceId: { $in: deviceIds } },
+        { $set: { off_start, off_end } }
+    );
+    const devices = await Device.find({ deviceId: { $in: deviceIds } });
+    return devices;
+};

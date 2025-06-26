@@ -21,6 +21,8 @@ const DeviceSchema = new mongoose.Schema({
     refreshRateType: { type: Number, default: 5 },
     wifi: { type: Boolean, default: true },
     reset: { type: Boolean, default: false },
+    off_start: { type: Number, default: 0 },
+    off_end: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model('Device', DeviceSchema);
