@@ -111,15 +111,16 @@ exports.changeDeviceSettings = async ({ deviceIds, economy_value, economy_start,
     return devices;
 };
 
-exports.getAndUpdateDevice = async ({ deviceId, temperature, battery }) => {
+exports.getAndUpdateDevice = async ({ deviceId, temperature, battery, value }) => {
     const device = await Device.findOne({ deviceId });
-    if (!device) return null;
+    if (!device) return {};
     device.temperature = temperature;
     device.battery = battery;
     const now = new Date();
     device.lastData = now;
     const reset = device.reset;
     device.reset = false;
+    if (value) device.value = value;
     await device.save();
     if (device.economy && (now.getHours() >= device.economy_start && now.getHours() < device.economy_end))
         device.value = device.economy_value;

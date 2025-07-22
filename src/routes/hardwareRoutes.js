@@ -8,10 +8,10 @@ const router = express.Router();
 router.post("/update/:deviceId", async (req, res) => {
     try {
         const { deviceId } = req.params;
-        const { temperature, battery } = req.body;
+        const { temperature, battery, value } = req.body;
         if (temperature < 0 || temperature > 70) return res.send("Invalid temperature");
         if (battery < 0 || battery > 100) return res.send("Invalid battery");
-        const {device, reset} = await getAndUpdateDevice({ deviceId, temperature, battery });
+        const {device, reset} = await getAndUpdateDevice({ deviceId, temperature, battery, value });
         if (!device) return res.send("Device not found!");
         await addReport({ deviceId, temperature, battery });
         res.send({
