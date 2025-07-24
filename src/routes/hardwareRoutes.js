@@ -13,7 +13,7 @@ router.post("/update/:deviceId", async (req, res) => {
         if (battery < 0 || battery > 100) return res.send("Invalid battery");
         const {device, reset} = await getAndUpdateDevice({ deviceId, temperature, battery, value, manual });
         if (!device) return res.send("Device not found!");
-        await addReport({ deviceId, temperature, battery });
+        await addReport({ deviceId, temperature, battery, manual });
         res.send({
             value: device.value,
             calibration: device.calibration,

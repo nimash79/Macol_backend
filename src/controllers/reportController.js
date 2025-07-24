@@ -4,11 +4,12 @@ const ExcelJS = require('exceljs');
 const moment = require('moment-jalaali');
 moment.loadPersian({ dialect: 'persian-modern' });
 
-exports.addReport = async ({ deviceId, temperature, battery }) => {
+exports.addReport = async ({ deviceId, temperature, battery, manual }) => {
   await Report.create({
     deviceId,
     temperature,
     battery,
+    manual,
   });
   return true;
 }

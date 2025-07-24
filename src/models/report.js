@@ -5,6 +5,7 @@ const ReportSchema = new mongoose.Schema({
     temperature: { type: Number, required: true },
     battery: { type: Number, required: true },
     reportDate: {type: Date, default: Date.now},
+    manual: {type: Boolean, default: false},
 });
 
 module.exports = mongoose.model('Report', ReportSchema);
