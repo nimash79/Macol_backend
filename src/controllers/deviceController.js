@@ -1,4 +1,6 @@
-const { Device } = require('../models');
+const { default: mongoose } = require('mongoose');
+const { sendNotification } = require('../firebase');
+const { Device, User } = require('../models');
 const { randomCode, generateRandomDeviceId } = require('../utils/helper');
 
 exports.addDevice = async ({ userId, mobile, count }) => {
@@ -120,7 +122,20 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery, value, man
     device.lastData = now;
     const reset = device.reset;
     device.reset = false;
-    if (manual) device.value = value;
+    if (manual) {
+        device.value = value;
+        const user = await User.findById(device.userId);
+        console.log("user:", user);
+        try {
+            await sendNotification({
+                title: "مَکُل",
+                body: `تنظیم دستی دما به ${value} درجه`,
+                token: user.pushToken,
+            })
+        } catch (err) {
+            console.log("Faied to send notification");
+        }
+    }
     await device.save();
     if (device.economy && (now.getHours() >= device.economy_start && now.getHours() < device.economy_end))
         device.value = device.economy_value;

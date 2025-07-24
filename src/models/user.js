@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     lastLoginDate: {type: Date, default: Date.now},
     activeCode: {type: Number, required: true, default: 0},
     isActive: {type: Boolean, required: true, default: false},
+    pushToken: {type: String},
 });
 
 module.exports = mongoose.model('User', UserSchema);

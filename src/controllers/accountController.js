@@ -33,7 +33,7 @@ exports.sendActiveCode = async ({ userId }) => {
 }
 
 exports.login = async body => {
-    const { mobile, password } = body;
+    const { mobile, password, pushToken } = body;
 
     let user = await User.findOne({ mobile });
     if (!user) return { status: 2 };
@@ -50,6 +50,7 @@ exports.login = async body => {
         lastLoginDate: user.lastLoginDate,
     }, JWTKEY, { expiresIn: '24h' });
     user.lastLoginDate = Date.now();
+    user.pushToken = pushToken;
     await user.save();
     return { status: 1, token };
 }

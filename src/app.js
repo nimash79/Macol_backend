@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const mongoose = require("mongoose");
+require("./firebase/index");
 
 
 const { PORT, MONGO } = process.env;
