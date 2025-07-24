@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./macol-72da1-firebase-adminsdk-fbsvc-42546ad631.json");
+const serviceAccount = require("./config.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
