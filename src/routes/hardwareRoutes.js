@@ -5,7 +5,7 @@ const { getRefreshRateType } = require("../utils/helper");
 
 const router = express.Router();
 
-router.post("/update/:deviceId", async (req, res) => {
+router.post("/updateeeeeeeeeeeeeeeeee/:deviceId", async (req, res) => {
     try {
         const { deviceId } = req.params;
         const { temperature, battery, value, manual } = req.body;
