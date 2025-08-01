@@ -125,7 +125,6 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery, value, man
     if (manual) {
         device.value = value;
         const user = await User.findById(device.userId);
-        console.log("user:", user);
         try {
             await sendNotification({
                 title: "مَکُل",
