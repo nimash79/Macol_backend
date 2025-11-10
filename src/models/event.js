@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const EventSchema = new mongoose.Schema({
-  deviceId: { type: mongoose.Types.ObjectId, required: true },
+  deviceId: { type: String, required: true },
 
   timestamp: {
     type: Date,

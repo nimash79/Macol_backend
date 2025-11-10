@@ -12,7 +12,7 @@ exports.addEvent = async ({
   weather,
 }) => {
   await Event.create({
-    deviceId: new mongoose.Types.ObjectId(parseInt(deviceId)),
+    deviceId,
     roomTemp,
     targetTemp,
     prevTargetTemp,
