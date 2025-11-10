@@ -25,7 +25,6 @@
     "moment-jalaali": "^0.10.4",
     "mongoose": "^8.13.2",
     "nodemon": "^3.1.9",
-    "openmeteo": "^1.2.2",
     "winston": "^3.17.0"
   }
 }

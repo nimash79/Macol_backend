@@ -6,7 +6,6 @@ const {
 const { addReport } = require("../controllers/reportController");
 const { addEvent } = require("../controllers/eventController");
 const { getRefreshRateType, getWeatherData } = require("../utils/helper");
-const { fetchWeatherApi } = require("openmeteo");
 
 const router = express.Router();
 
