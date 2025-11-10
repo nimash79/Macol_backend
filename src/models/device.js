@@ -23,6 +23,8 @@ const DeviceSchema = new mongoose.Schema({
     reset: { type: Boolean, default: false },
     off_start: { type: Number, default: 0 },
     off_end: { type: Number, default: 0 },
+    latitude: {type: Number, required: true},
+    longitude: {type: Number, required: true},
 });
 
 module.exports = mongoose.model('Device', DeviceSchema);
