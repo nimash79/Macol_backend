@@ -15,7 +15,7 @@ const {
   changeDeviceOffTimes,
 } = require("../controllers/deviceController");
 const { addEvent } = require("../controllers/eventController");
-const { getWeatherData } = require("../utils/helper");
+const { getWeatherData, isTodayHoliday } = require("../utils/helper");
 
 const router = express.Router();
 
@@ -65,34 +65,32 @@ router.post("/change-name", async (req, res) => {
 router.post("/change", async (req, res) => {
   try {
     const { deviceIds, value, economy } = req.body;
-    const promises = [];
-    [...deviceIds].forEach(async (deviceId) => {
-      const promise = new Promise(async (resolve, reject) => {
-        try {
-          const device = await getDevice({ deviceId });
-          if (device) {
-            const weather = await getWeatherData(
-              device.latitude,
-              device.longitude
-            );
-            await addEvent({
-              deviceId,
-              roomTemp: device.temperature,
-              targetTemp: value,
-              prevTargetTemp: device.value,
-              summer: device.summer,
-              actionType: "set_temp",
-              weather,
-            });
-          }
-          resolve(true);
-        } catch (err) {
-          reject(err);
+
+    for (const deviceId of deviceIds) {
+      console.log(deviceId);
+      try {
+        const device = await getDevice({ deviceId });
+        if (device) {
+          const weather = await getWeatherData(
+            device.latitude,
+            device.longitude
+          );
+          const isHoliday = await isTodayHoliday();
+          await addEvent({
+            deviceId,
+            roomTemp: device.temperature,
+            targetTemp: value,
+            prevTargetTemp: device.value,
+            summer: device.summer,
+            actionType: "set_temp",
+            weather,
+            isHoliday,
+          });
         }
-      });
-      promises.push(promise);
-    });
-    await Promise.all(promises);
+      } catch (err) {
+        console.error(err);
+      }
+    }
     await changeDeviceValue({ deviceIds, value, economy });
     res.sendResponse({ status: 1 });
   } catch (err) {
@@ -122,6 +120,7 @@ router.post("/change-on", async (req, res) => {
     const device = await getDevice({ deviceId });
     if (device) {
       const weather = await getWeatherData(device.latitude, device.longitude);
+      const isHoliday = await isTodayHoliday();
       await addEvent({
         deviceId,
         roomTemp: device.temperature,
@@ -130,6 +129,7 @@ router.post("/change-on", async (req, res) => {
         summer: device.summer,
         actionType: on ? "turn_on" : "turn_off",
         weather,
+        isHoliday,
       });
     }
     res.sendResponse({ status: 1 });

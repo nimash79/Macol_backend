@@ -22,7 +22,8 @@ const EventSchema = new mongoose.Schema({
   // Time-based features
   hourOfDay: { type: Number, min: 0, max: 23 },
   dayOfWeek: { type: Number, min: 0, max: 6 },
-  isWeekend: { type: Boolean }
+  isWeekend: { type: Boolean },
+  isHoliday: { type: Boolean }
 });
 
 // Optional: auto-compute time features before saving

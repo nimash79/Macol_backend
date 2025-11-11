@@ -1,3 +1,5 @@
+const moment = require('moment-jalaali')
+
 exports.randomCode = () => {
   var min = 10000;
   var max = 90000;
@@ -75,5 +77,18 @@ exports.getWeatherData = async (latitude, longitude) => {
   } catch (error) {
     console.error("Failed to fetch weather data:", error);
     return null;
+  }
+}
+
+exports.isTodayHoliday = async () => {
+  try {
+    const today = moment();
+    const response = await fetch(`https://holidayapi.ir/jalali/${today.jYear()}/${today.jMonth()+1}/${today.jDate()}`);
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    const data = await response.json();
+    return data.is_holiday;
+  } catch (err) {
+    console.error("Failed to fetch holiday data:", err);
+    return false;
   }
 }

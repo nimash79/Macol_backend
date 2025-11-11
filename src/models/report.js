@@ -7,6 +7,7 @@ const ReportSchema = new mongoose.Schema({
     reportDate: {type: Date, default: Date.now},
     summer: {type: Boolean, default: false},
     weather: { type: mongoose.Schema.Types.Mixed, default: null },
+    isHoliday: { type: Boolean }
 });
 
 module.exports = mongoose.model('Report', ReportSchema);

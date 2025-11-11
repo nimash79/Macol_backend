@@ -10,6 +10,7 @@ exports.addEvent = async ({
   summer,
   actionType,
   weather,
+  isHoliday,
 }) => {
   await Event.create({
     deviceId,
@@ -19,6 +20,7 @@ exports.addEvent = async ({
     summer,
     actionType,
     weather,
+    isHoliday,
   });
   return true;
 };
