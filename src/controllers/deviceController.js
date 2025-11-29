@@ -5,7 +5,7 @@ const { randomCode, generateRandomDeviceId } = require('../utils/helper');
 
 exports.addDevice = async ({ userId, mobile, count }) => {
     const currentDevices = await Device.find({}).select("deviceId");
-    const currentDevicesOfUser = await Device.find({ userId }).select("name");
+    const currentDevicesOfUser = await Device.find({ userId }).select(["name", "latitude", "longitude"]);
     let number = 1;
     const promises = [];
     for (let i = 0; i < count; i++) {
@@ -27,7 +27,9 @@ exports.addDevice = async ({ userId, mobile, count }) => {
             name,
             temperature: 15,
             value: 15,
-            battery: 100
+            battery: 100,
+            latitude: currentDevicesOfUser.length ? currentDevicesOfUser[0].latitude : 0,
+            longitude: currentDevicesOfUser.length ? currentDevicesOfUser[0].longitude : 0,
         });
         promises.push(promise);
     }
