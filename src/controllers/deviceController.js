@@ -140,6 +140,9 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery, value, man
     await device.save();
     if (device.economy && (now.getHours() >= device.economy_start && now.getHours() < device.economy_end))
         device.value = device.economy_value;
+    // check for off times
+    let safeOffTimes = !(now.getHours() >= device.off_start && now.getHours() < device.off_end)
+    device.on = device.on && safeOffTimes;
     // check for off dates
     let safeOffDates = true;
     device.off_dates.forEach(date => {
@@ -147,9 +150,8 @@ exports.getAndUpdateDevice = async ({ deviceId, temperature, battery, value, man
         if (date == now.getDate()) safeOffDates = false;
     })
     device.on = device.on && safeOffDates;
-    // check for off times
-    let safeOffTimes = !(now.getHours() >= device.off_start && now.getHours() < device.off_end)
-    device.on = device.on && safeOffTimes;
+    // TODO: if ai was on, the device must be on regardless to other options like off times and off dates
+    if (device.ai) device.on = true;
     return { device, reset };
 }
 
