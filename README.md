@@ -1,109 +1,104 @@
-# Macol — Smart Temperature Control
+# Macol — Backend API
 
-A web application for monitoring and controlling temperature devices, with support for ESP32-WROOM-based hardware. Macol provides a centralized interface for checking device status, adjusting temperature settings, managing schedules, and reviewing temperature reports.
+The backend service for **Macol**, a temperature-control application that manages users, connected devices, device settings, and temperature reports.
+
+The backend is built with Node.js and Express. It uses MongoDB through Mongoose and integrates Firebase Admin SDK functionality for server-side Firebase operations.
 
 ## Overview
 
-Macol is the frontend of a temperature-control system that connects users to their registered devices through a backend API.
+Macol Backend provides the API layer between the web application and the device-management system.
 
-The interface is built with React and Vite. It communicates with the Macol backend to retrieve device information, update control settings, and display historical temperature data.
+It handles account and user operations, device configuration, hardware-related requests, and report retrieval. The backend also includes authentication middleware, logging, and date-related utilities.
 
-The application includes authentication, device management, temperature controls, energy-saving settings, reporting, and account configuration. It also supports localization, including right-to-left layouts for languages such as Persian.
+**Live backend:** https://macol-backend.vercel.app
 
 ## Features
 
-- **Device dashboard:** View registered devices, their current temperatures, and their operational status.
-- **Temperature control:** Adjust target temperatures using interactive controls.
-- **Device power control:** Turn supported devices on or off from the dashboard.
-- **Multi-device management:** Select multiple devices and apply supported settings.
-- **Temperature reports:** Review daily, weekly, and monthly temperature data.
-- **Energy-saving mode:** Configure economy-mode temperature and time settings.
-- **Device settings:** Access device-specific configuration options.
-- **Scheduled downtime:** Configure dates and times when devices should be switched off.
-- **Calibration:** Access device calibration functionality.
-- **AI-related controls:** Provides an interface for an AI-related device mode, subject to device eligibility and backend support.
-- **Account management:** Register, log in, verify accounts, recover passwords, and manage account information.
-- **Device management:** View and manage devices associated with the user's account.
-- **Push notifications:** Integrates Firebase Cloud Messaging in the browser.
-- **Internationalization:** Uses i18next for translated interface content.
-- **RTL support:** Adjusts document direction for right-to-left languages.
-- **Progressive Web App tooling:** Includes Vite PWA support.
+- **REST API:** Provides HTTP endpoints for the frontend.
+- **User management:** User-related routes and middleware.
+- **Account operations:** Account-related endpoints.
+- **Device management:** Retrieve and update device information and settings.
+- **Hardware integration:** Dedicated routes and middleware for hardware-related operations.
+- **Temperature reporting:** Report-related endpoints.
+- **Authentication:** JWT-related utilities and password hashing support.
+- **Firebase integration:** Uses Firebase Admin SDK.
+- **Logging:** Centralized logging with Winston.
+- **Date utilities:** Includes date-fns and Jalali calendar utilities.
+- **Spreadsheet generation:** ExcelJS is available for report-related functionality.
+- **Database persistence:** Uses Mongoose to connect to MongoDB.
 
 ## Technology Stack
 
 | Technology | Purpose |
 |---|---|
-| React 19 | UI components |
-| Vite 6 | Development server and production build |
-| React Router 7 | Client-side navigation |
-| Redux Toolkit | Application state management |
-| React Redux | Connecting components to Redux |
-| Axios | Backend API requests |
-| Material UI | UI components |
-| Bootstrap 5 | Styling and responsive layout |
-| Tailwind CSS | Utility-first styling |
-| Framer Motion | Animations |
-| Chart.js | Temperature and report visualizations |
-| React Multi Date Picker | Date-selection interface |
-| Jalali Moment | Jalali calendar utilities |
-| i18next and react-i18next | Localization |
-| Firebase | Browser-side Firebase integration and messaging |
-| React Toastify | Notifications and user feedback |
-| Vite PWA plugin | Progressive Web App support |
+| Node.js | JavaScript runtime |
+| Express 5 | HTTP API framework |
+| MongoDB | Document database |
+| Mongoose | MongoDB object modeling |
+| Firebase Admin SDK | Server-side Firebase integration |
+| JSON Web Token | Authentication token support |
+| bcryptjs | Password hashing |
+| Axios | HTTP requests |
+| dotenv | Environment configuration |
+| Winston | Application logging |
+| ExcelJS | Spreadsheet generation |
+| date-fns | Date manipulation |
+| moment-jalaali | Jalali calendar utilities |
 
-## Architecture
+## API Architecture
 
 ```text
-User
- |
- v
-Macol React Frontend
- |
- +-- Authentication
- +-- Device Dashboard
- +-- Temperature Controls
- +-- Device Settings
- +-- Reports and Charts
- |
- v
-Axios / HTTP Requests
- |
- v
-Macol Backend API
- |
- v
-Database and Hardware Integration
- |
- v
-ESP32-WROOM / Temperature Sensors
+Macol Frontend
+      |
+      | HTTP Requests
+      v
+Express Backend
+      |
+      +-- API Middleware
+      |
+      +-- Authentication Middleware
+      |
+      +-- Accounts
+      |
+      +-- Users
+      |
+      +-- Devices
+      |
+      +-- Hardware
+      |
+      +-- Reports
+      |
+      v
+MongoDB / Mongoose
+      |
+      v
+Hardware Integration
+      |
+      v
+ESP32-WROOM and Temperature Sensors
 ```
 
-The frontend handles the user interface and API requests. Device communication and server-side operations are handled by the backend and the connected hardware integration.
+The backend exposes separate route groups for different application responsibilities. Hardware communication details depend on the corresponding implementation and device firmware.
 
-## Project Structure
+## Repository Structure
 
 ```text
-Macol/
-├── public/                 # Static assets and public resources
+Macol_backend/
 ├── src/
-│   ├── components/         # Reusable UI components
-│   ├── hooks/              # Custom React hooks
-│   ├── layouts/            # Application layouts
-│   ├── pages/              # Application screens
-│   │   ├── authentication/ # Login, registration, verification
-│   │   └── settings/       # Account and device settings
-│   ├── reducers/           # Redux state slices
-│   ├── services/           # API communication
-│   ├── localization/       # Translation configuration
-│   ├── utils/              # Shared utilities
-│   ├── App.jsx             # Routes and application logic
-│   └── main.jsx            # Application entry point
-├── .env.example
+│   ├── routes/             # API route definitions
+│   ├── middlewares/        # API and authentication middleware
+│   ├── utils/              # Shared utilities and constants
+│   ├── firebase/           # Firebase integration
+│   ├── app.js               # Express entry point
+│   └── logger.js            # Logging configuration
+├── .env.example             # Environment variable template
+├── .gitignore
 ├── package.json
 ├── package-lock.json
-├── vite.config.js
-└── README.md
+└── LICENSE
 ```
+
+The route modules are organized into users, accounts, devices, hardware, and reports.
 
 ## Getting Started
 
@@ -111,13 +106,14 @@ Macol/
 
 - Node.js compatible with the project dependencies.
 - npm.
-- A running Macol backend for API-dependent features.
+- A running MongoDB instance or MongoDB connection string.
+- Firebase configuration and permissions if the relevant Firebase features are required.
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/nimash79/Macol.git
-cd Macol
+git clone https://github.com/nimash79/Macol_backend.git
+cd Macol_backend
 ```
 
 ### 2. Install dependencies
@@ -126,17 +122,24 @@ cd Macol
 npm ci
 ```
 
-### 3. Configure the backend URL
+### 3. Configure environment variables
 
-Create a `.env` file based on `.env.example`:
+Create a local `.env` file based on `.env.example`.
+
+The repository defines these variables:
 
 ```dotenv
-VITE_API_URL=http://localhost:3000
+MONGO=mongodb://127.0.0.1:27017/macol
+PORT=3000
+JWTKEY=replace_with_a_secure_random_secret
+MESSAGE_APIKEY=replace_with_your_message_service_key
 ```
 
-Change the URL to match your backend deployment and port.
+These values are examples for local development, not production credentials. Update the MongoDB connection string and other settings according to your deployment. The example database name is illustrative.
 
-**Security note:** Variables prefixed with `VITE_` are exposed to browser-side code. Never place private keys, passwords, or privileged service credentials in frontend environment variables.
+The application requires `MONGO` and `PORT` during startup. Authentication and messaging features may also depend on `JWTKEY`, `MESSAGE_APIKEY`, and the relevant Firebase configuration.
+
+Never commit real credentials or production secrets.
 
 ### 4. Start the development server
 
@@ -144,71 +147,107 @@ Change the URL to match your backend deployment and port.
 npm run dev
 ```
 
-Vite prints the local development URL in the terminal.
+This starts the application using Nodemon.
 
-### 5. Build for production
-
-```bash
-npm run build
-```
-
-The production files are generated in the `dist/` directory.
-
-Preview the production build locally:
+For standard execution:
 
 ```bash
-npm run preview
+npm start
 ```
+
+The backend starts from `src/app.js` and connects to MongoDB using the configured `MONGO` connection string.
+
+### 5. Configure the frontend
+
+Set the frontend's `VITE_API_URL` to the backend's base URL.
+
+For local development:
+
+```dotenv
+VITE_API_URL=http://localhost:3000
+```
+
+Ensure that the backend is reachable from the browser and that its CORS policy allows the frontend origin.
 
 ## Available Scripts
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start the Vite development server. |
-| `npm run build` | Build the production application. |
-| `npm run lint` | Run ESLint. |
-| `npm run preview` | Preview the production build locally. |
-| `npm run serve` | Serve the built frontend through the configured PM2 command. |
+| `npm start` | Start the backend with Node.js. |
+| `npm run dev` | Start the backend using Nodemon. |
+| `npm run serve` | Start the configured PM2 process. |
 | `npm run unserve` | Stop and remove the configured PM2 process. |
 
-For production deployment, build the application and serve `dist/` through a static web server or hosting platform. Configure the production API URL before building.
+## API Route Groups
 
-## Integration with ESP32 Hardware
+The application registers these route groups:
 
-The frontend communicates with the backend rather than directly managing privileged hardware operations.
+| Base path | Purpose |
+|---|---|
+| `/api/accounts` | Account-related operations |
+| `/api/users` | User-related operations |
+| `/api/devices` | Device management and settings |
+| `/api/hardware` | Hardware-related operations |
+| `/api/reports` | Temperature and device reports |
 
-The overall workflow is:
+Some routes are protected by middleware. Consult the route definitions and middleware implementation for the exact endpoint paths, required tokens, request payloads, and response formats.
 
-1. The user signs in and accesses their registered devices.
-2. The frontend requests device information from the backend.
-3. The user changes a supported device setting.
-4. The frontend sends the update to the backend API.
-5. The backend processes the request and integrates with the relevant device or hardware service.
-6. Updated device information is returned to the frontend.
+## Hardware Integration
 
-The actual hardware communication protocol depends on the backend and ESP32 firmware implementation.
+The backend is responsible for processing requests from the frontend and coordinating hardware-related operations.
 
-## Localization
+A typical flow is:
 
-The application uses i18next and react-i18next for language support. It updates the HTML document's language and direction based on the selected language.
+1. A user selects a device or changes its settings in the frontend.
+2. The frontend submits an API request.
+3. The backend validates and processes the request.
+4. Device-related data is persisted or updated.
+5. The backend performs the configured hardware integration.
+6. Updated device information and reports are returned to the frontend.
 
-When adding translations, ensure that both the translated content and the layout work correctly in left-to-right and right-to-left modes.
+The exact protocol used to communicate with ESP32-WROOM hardware should be documented alongside the relevant hardware code and firmware.
 
 ## Deployment
 
-1. Configure `VITE_API_URL` for the target backend.
-2. Run `npm run build`.
-3. Deploy the generated `dist/` directory.
-4. Configure the backend CORS policy to allow the deployed frontend origin.
-5. Verify authentication, API requests, and push-notification configuration.
+The repository includes PM2 scripts for process management:
+
+```bash
+npm run serve
+```
+
+To stop the configured process:
+
+```bash
+npm run unserve
+```
+
+For production deployment:
+
+- Configure a secure MongoDB connection.
+- Set strong authentication secrets.
+- Configure Firebase credentials securely.
+- Restrict CORS to trusted frontend origins.
+- Use HTTPS for public API traffic.
+- Validate and authorize device-control requests.
+- Protect hardware endpoints against unauthorized access.
+- Configure logging, backups, and monitoring.
+- Keep environment files and credentials out of source control.
+
+## Security Considerations
+
+Temperature-control APIs can affect physical devices. Authentication alone is not sufficient; authorization should verify that a user is allowed to control each requested device.
+
+Review the API middleware and route-level access checks before deployment. The backend currently configures permissive CORS headers in its application entry point, so production deployments should restrict allowed origins and review credential handling.
+
+Store privileged Firebase credentials on the server only. Never expose Firebase Admin SDK credentials to the browser or commit them to Git.
 
 ## Related Repository
 
-- [Macol Backend](https://github.com/nimash79/Macol_backend) — API, account management, device operations, reports, and hardware integration.
+- [Macol Frontend](https://github.com/nimash79/Macol) — React-based temperature-control interface.
 
 ## License
 
-Refer to the repository's licensing information before redistributing or reusing the code.
+The repository includes an MIT license. Refer to the [`LICENSE`](LICENSE) file for the complete terms.
 
 ## Author
 
